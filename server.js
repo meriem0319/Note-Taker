@@ -7,6 +7,9 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+//access db.json file
+const db_Json = require('./db/db.json');
+
 //access images, css, js files in the public dir
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -43,19 +46,27 @@ app.post('/api/notes', (req, res) => {
 })
 
 //DELETE route by id
-app.delete('/api/notes/:id', (req, res) => {
-    const parseNote = JSON.parse(fs.readFileSync('./db/db.json', "utf-8"));
-    const noteId = (req.params.id).toString();
+app.delete("/api/notes/:id", function (req, res) {
+    console.log("Req.params:", req.params);
+    let deletedNote = parsInt(req.params.id);
+    console.log(deletedNote);
 
-    //we need to save the notes without matching id, and only matching id ones will delete
-    parseNote = parseNote.filter(selected => {
-        return selected.id != noteId;
-    })
+    for (let i = 0; i < db_Json.length; i++) {
+        if (deletedNote === db_Json[i].id) {
+            db_Json.splice(i, 1);
 
-    //we need to display the updated note, and write it to db.json
-    fs.writeFileSync('./db/db.json', JSON.stringify(parseNote));
-    res.json(parseNote);
-})
+            let noteJson = JSON.stringify(db_Json, null, 2);
+            console.log(noteJson);
+            fs.writeFile('./db/db.json', noteJson, function (err) {
+                if (err) throw err;
+                console.log("Note is deleted");
+                res.json(db_Json);
+            });
+        }
+    }
+});
 
 //we need to listen to the port once it deploys
-app.listen(PORT, () => console.log("Server is listening on Port " + PORT));
+app.listen(PORT, () => { 
+    console.log(`Server is listening on Port ${PORT}!`);
+})
