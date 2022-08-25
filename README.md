@@ -41,7 +41,7 @@ THEN I am presented with empty fields to enter a new note title and the note’s
 
 ## 💻 Deployment
  
-### My Gitub Repo Link:
+### My GitHub Repo Link:
 * https://github.com/meriem0319/Note-Taker
 
 ### Heroku Deployed Link:
