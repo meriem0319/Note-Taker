@@ -45,27 +45,6 @@ app.post('/api/notes', (req, res) => {
     res.json(parseNote);
 })
 
-//DELETE route by id
-app.delete("/api/notes/:id", function (req, res) {
-    console.log("Req.params:", req.params);
-    let deletedNote = parsInt(req.params.id);
-    console.log(deletedNote);
-
-    for (let i = 0; i < db_Json.length; i++) {
-        if (deletedNote === db_Json[i].id) {
-            db_Json.splice(i, 1);
-
-            let noteJson = JSON.stringify(db_Json, null, 2);
-            console.log(noteJson);
-            fs.writeFile('./db/db.json', noteJson, function (err) {
-                if (err) throw err;
-                console.log("Note is deleted");
-                res.json(db_Json);
-            });
-        }
-    }
-});
-
 //we need to listen to the port once it deploys
 app.listen(PORT, () => { 
     console.log(`Server is listening on Port ${PORT}!`);
